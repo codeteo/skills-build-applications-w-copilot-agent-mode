@@ -20,6 +20,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 from django.http import JsonResponse
+from django.views.generic import RedirectView
 
 
 router = DefaultRouter()
@@ -45,6 +46,7 @@ def api_root(request):
     })
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/api/', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/', api_root, name='api-root'),
     path('api/', include(router.urls)),
