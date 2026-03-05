@@ -18,9 +18,9 @@ import os
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from . import views
-from django.http import JsonResponse
-from django.views.generic import RedirectView
 
 
 router = DefaultRouter()
@@ -36,18 +36,18 @@ if codespace_name:
 else:
     base_url = "http://localhost:8000"
 
+@api_view(['GET'])
 def api_root(request):
-    return JsonResponse({
+    return Response({
         'users': f'{base_url}/api/users/',
         'teams': f'{base_url}/api/teams/',
-        'workouts': f'{base_url}/api/workouts/',
         'activities': f'{base_url}/api/activities/',
+        'workouts': f'{base_url}/api/workouts/',
         'leaderboard': f'{base_url}/api/leaderboard/',
     })
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/api/', permanent=False)),
+    path('', api_root, name='api-root'),
     path('admin/', admin.site.urls),
-    path('api/', api_root, name='api-root'),
     path('api/', include(router.urls)),
 ]
